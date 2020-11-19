@@ -1,0 +1,113 @@
+---
+title: "Effect of Covid 19 on Voting Patterns in the 2020 US Presidential Election"
+author: "Amir Hamilton"
+date: "11/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
+library(tidyverse)
+library(ggplot2)
+library("readxl")
+
+owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv") %>%
+  filter(iso_code == "USA")
+```
+
+## 1
+Yes, lots of procrastination, and my analyses have not even really been started yet (and I need to make it look more aesthetically pleasing), but here is what I got so far. I've deleted lots of things since I've recently found a far superior dataset, so that is also one of the reasons I don't have much code yet.
+
+Also I'm not sure whether I want to look at Covid 19's effect on voter turnout, number of ballots by mail, % Democrat/Republican, or some other variable. Right now, I guess I would say my hypothesis is that states with a higher R (reproduction number used in epidemiology) will tend to vote more strongly by mail, disregarding states that voted entirely by mail (i.e. states with no in person voting). 
+
+Right now the only graphics I have are for background/introduction by the way. 
+
+## Introduction
+
+```{r total}
+usa_owid <- owid %>%
+  slice(235:324)
+ggplot(usa_owid, aes(x = as.Date(date), y = new_cases)) +
+  geom_col() +
+  labs(x = "Date", y = "New Cases", title = "Total New Cases in the US by Date")
+```
+
+# Generation Time (T)
+
+T, the generation time, is the time between infection events in an infector-infectee pair of individuals. T influences the time scale of the pandemic's growth and decay. Observing or determining the exact time of infection can be difficult since people often do not get tested until they start showing symptoms.
+
+# Serial Interval (s)
+
+Serial interval, s,  is the average time between symptoms of infection in the transmitter to when the person they infect develops symptoms. The problem with s in the Covid-19 pandemic is that many infected people do not show symptoms. 
+
+# Epidemic Growth Rate (r)
+
+The epidemic growth rate, r, is the rate at which new cases are occurring. 
+
+```{r}
+
+```
+
+# Doubling Time (dt)
+
+The doubling time of a pandemic, dt, is related to r. It is amount of time which leads to a doubling of cases (pretty self-explanatory). This number can also tell us the halving time if the number of cases are decreasing.  
+
+In cases where these variables can be experimentally observed, that is preferable than inferring them.
+
+# Parameters
+
+Number of susceptible individuals
+Proportion of asymptomatic individuals
+incubation time ***
+effects of age
+duration from symptom onset to hospitalization or death
+infectiousness of asymptomatic individuals
+
+# Reproduction Number (R)
+
+R, the reproduction number, is a measure of the infectious potential of a disease. If R equals 1, then the number of cases will remain constant. If R is less than 1, then the number of cases are decreasing, and if R is greater than 1 then the number of cases are increasing. Determining R is valuable for public health officials and lawmakers because it tells you what proportion of new infections you need to prevent in order to go from increasing cases to constant or decreasing cases.
+
+R0 (pronounced r nought) represents the reproduction number at the beginning of the pandemic, and Rt is the reproduction number at time t. 
+
+There are several ways to calculate R. I'm just using the data from OWID.
+
+```{r reproduction.number}
+ggplot(usa_owid, aes(x = as.Date(date), y = reproduction_rate)) +
+  geom_col() +
+  labs(x = "Date", y = "R", title = "Reproduction Rate Over Time") +
+  geom_hline(yintercept = 1)
+```
+
+You can see that on Sep 11 the reproduction rate surpassed 1 and has remained above 1 since then, indicating a worsening pandemic. 
+
+## Presidential Election
+
+## Interactions
+
+In this section I plan on using regressions on a state by state basis to determine the relationship between election turnout and R, the reproduction number. It might be interesting as well to see if there is a relationship between the number of hospital patients or number of icu patients and turnout. 
+
+```{r}
+huge <- read_excel("data/rt_table_export.xlsx") %>%
+  filter(resolution == "county") %>%
+  mutate(date = as.Date(date, "%m/%d/%y")) %>%
+  arrange(date) 
+```
+
+## Sources and References
+https://royalsociety.org/news/2020/09/set-c-covid-r-rate/
+
+Chongsuvivatwong, Virasakdi. Analysis of epidemiological data using R and Epicalc. 2008, Hat Yai, Thailand: Chammuang Press.
+
+Boelle, Pierre-Yves, Thomas Obadia. "Estimation of R0 and Real-Time Reproduction Number from Epidemics." 
+
+https://ourworldindata.org/coronavirus
+
+https://github.com/lin-lab/COVID19-Viz/tree/master/clean_data
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
