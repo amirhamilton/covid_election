@@ -27,7 +27,7 @@ Right now the only graphics I have are for background/introduction by the way.
 
 ```{r total}
 usa_owid <- owid %>%
-  slice(235:324)
+  slice(235:325) ## make this more generalized
 ggplot(usa_owid, aes(x = as.Date(date), y = new_cases)) +
   geom_col() +
   labs(x = "Date", y = "New Cases", title = "Total New Cases in the US by Date")
@@ -46,7 +46,7 @@ Serial interval, s,  is the average time between symptoms of infection in the tr
 The epidemic growth rate, r, is the rate at which new cases are occurring. 
 
 ```{r}
-
+growth_rate <- read.csv("data/growth_rate.csv")
 ```
 
 # Doubling Time (dt)
@@ -72,10 +72,10 @@ R0 (pronounced r nought) represents the reproduction number at the beginning of 
 
 There are several ways to calculate R. I'm just using the data from OWID.
 
-```{r reproduction.number}
+```{r reproduction.number, echo=FALSE}
 ggplot(usa_owid, aes(x = as.Date(date), y = reproduction_rate)) +
   geom_col() +
-  labs(x = "Date", y = "R", title = "Reproduction Rate Over Time") +
+  labs(x = "Date", y = "R", title = "US Reproduction Rate Over Time") +
   geom_hline(yintercept = 1)
 ```
 
@@ -83,14 +83,18 @@ You can see that on Sep 11 the reproduction rate surpassed 1 and has remained ab
 
 ## Presidential Election
 
+```{r}
+
+```
+
+
 ## Interactions
 
 In this section I plan on using regressions on a state by state basis to determine the relationship between election turnout and R, the reproduction number. It might be interesting as well to see if there is a relationship between the number of hospital patients or number of icu patients and turnout. 
 
 ```{r}
-huge <- read_excel("data/rt_table_export.xlsx") %>%
+covid_county <- read_excel("data/rt_table_export.xlsx") %>%
   filter(resolution == "county") %>%
-  mutate(date = as.Date(date, "%m/%d/%y")) %>%
   arrange(date) 
 ```
 
