@@ -11,6 +11,8 @@ knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
 library(tidyverse)
 library(ggplot2)
 library("readxl")
+library(rvest)
+library(pdftools)
 
 owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv") %>%
   filter(iso_code == "USA")
@@ -108,6 +110,8 @@ Boelle, Pierre-Yves, Thomas Obadia. "Estimation of R0 and Real-Time Reproduction
 https://ourworldindata.org/coronavirus
 
 https://github.com/lin-lab/COVID19-Viz/tree/master/clean_data
+
+County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data,  
 
 
 ```{r pressure, echo=FALSE}
