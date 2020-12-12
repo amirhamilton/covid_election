@@ -98,6 +98,15 @@ In this section I plan on using regressions on a state by state basis to determi
 covid_county <- read_excel("data/rt_table_export.xlsx") %>%
   filter(resolution == "county") %>%
   arrange(date) 
+
+
+
+union_election_day_r <- lm(trump.votes ~ covid_county$Rt_plot, data = )
+
+
+alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
+  mutate(dispID = str_replace(county,"Alabama"))
+
 ```
 
 ## Sources and References
@@ -111,7 +120,9 @@ https://ourworldindata.org/coronavirus
 
 https://github.com/lin-lab/COVID19-Viz/tree/master/clean_data
 
-County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data,  
+County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data.
+
+For reproduction rate by county, the dataset was too large for github so I manually reduced the size to exclude data from before November 15 and to exclude counties/dates that had too small of a sample size to produce a reproduction rate, as determined by the study. 
 
 
 ```{r pressure, echo=FALSE}
