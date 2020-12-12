@@ -105,7 +105,10 @@ union_election_day_r <- lm(trump.votes ~ covid_county$Rt_plot, data = )
 
 
 alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
-  mutate(dispID = str_replace(county,"Alabama"))
+  mutate(state = "Alabama") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+
+alabama_model <- 
 
 ```
 
