@@ -136,6 +136,161 @@ county_data %>%
 
 ```
 
+## County Election Results
+```{r}
+alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
+  mutate(state = "Alabama") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+arizona_president <- read_excel("data/state_election_results/arizona_president.xlsx") %>%
+  mutate(state = "Arizona") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+arkansas_president <- read_excel("data/state_election_results/arkansas_president.xlsx") %>%
+  mutate(state = "Arkansas") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+california_president <- read_excel("data/state_election_results/california_president.xlsx") %>%
+  mutate(state = "California") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+colorado_president <- read_excel("data/state_election_results/colorado_president.xlsx") %>%
+  mutate(state = "Colorado") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+connecticut_president <- read_excel("data/state_election_results/connecticut_president.xlsx") %>%
+  mutate(state = "Alabama") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+dc_president <- read_excel("data/state_election_results/dc_president.xlsx") %>%
+  mutate(state = "DC") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+delaware_president <- read_excel("data/state_election_results/delaware_president.xlsx") %>%
+  mutate(state = "Delaware") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+florida_president <- read_excel("data/state_election_results/florida_president.xlsx") %>%
+  mutate(state = "Florida") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+georgia_president <- read_excel("data/state_election_results/georgia_president.xlsx") %>%
+  mutate(state = "Georgia") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+hawaii_president <- read_excel("data/state_election_results/hawaii_president.xlsx") %>%
+  mutate(state = "Hawaii") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+idaho_president <- read_excel("data/state_election_results/idaho_president.xlsx") %>%
+  mutate(state = "Idaho") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+illinois_president <- read_excel("data/state_election_results/illinois_president.xlsx") %>%
+  mutate(state = "Illinois") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+indiana_president <- read_excel("data/state_election_results/indiana_president.xlsx") %>%
+  mutate(state = "Indiana") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+iowa_president <- read_excel("data/state_election_results/iowa_president.xlsx") %>%
+  mutate(state = "Iowa") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+kansas_president <- read_excel("data/state_election_results/kansas_president.xlsx") %>%
+  mutate(state = "Kansas") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+kentucky_president <- read_excel("data/state_election_results/kentucky_president.xlsx") %>%
+  mutate(state = "Kentucky") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+louisiana_president <- read_excel("data/state_election_results/louisiana_president.xlsx") %>%
+  mutate(state = "Louisiana") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+maine_president <- read_excel("data/state_election_results/maine_president.xlsx") %>%
+  mutate(state = "Maine") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+maryland_president <- read_excel("data/state_election_results/maryland_president.xlsx") %>%
+  mutate(state = "Maryland") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+massachusetts_president <- read_excel("data/state_election_results/Massachusetts_president.xlsx") %>%
+  mutate(state = "Massachusetts") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+michigan_president <- read_excel("data/state_election_results/michigan_president.xlsx") %>%
+  mutate(state = "Michigan") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+minnesota_president <- read_excel("data/state_election_results/minnesota_president.xlsx") %>%
+  mutate(state = "Minnesota") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+mississippi_president <- read_excel("data/state_election_results/mississippi_president.xlsx") %>%
+  mutate(state = "Mississippi") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+missouri_president <- read_excel("data/state_election_results/missouri_president.xlsx") %>%
+  mutate(state = "Missouri") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+montana_president <- read_excel("data/state_election_results/montana_president.xlsx") %>%
+  mutate(state = "Montana") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+nebraska_president <- read_excel("data/state_election_results/nebraska_president.xlsx") %>%
+  mutate(state = "Nebraska") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+nevada_president <- read_excel("data/state_election_results/nevada_president.xlsx") %>%
+  mutate(state = "Nevada") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+newhampshire_president <- read_excel("data/state_election_results/newhampshire_president.xlsx") %>%
+  mutate(state = "New Hampshire") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+newjersey_president <- read_excel("data/state_election_results/newjersey_president.xlsx") %>%
+  mutate(state = "New Jersey") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+newmexico_president <- read_excel("data/state_election_results/newmexico_president.xlsx") %>%
+  mutate(state = "New Mexico") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+newyork_president <- read_excel("data/state_election_results/newyork_president.xlsx") %>%
+  mutate(state = "New York") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+northcarolina_president <- read_excel("data/state_election_results/northcarolina_president.xlsx") %>%
+  mutate(state = "North Carolina") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+northdakota_president <- read_excel("data/state_election_results/northdakota_president.xlsx") %>%
+  mutate(state = "North Dakota") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+ohio_president <- read_excel("data/state_election_results/ohio_president.xlsx") %>%
+  mutate(state = "Ohio") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+oklahoma_president <- read_excel("data/state_election_results/oklahoma_president.xlsx") %>%
+  mutate(state = "Oklahoma") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+oregon_president <- read_excel("data/state_election_results/oregon_president.xlsx") %>%
+  mutate(state = "Oregon") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+pennsylvania_president <- read_excel("data/state_election_results/pennsylvania_president.xlsx") %>%
+  mutate(state = "Pennsylvania") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+rhodeisland_president <- read_excel("data/state_election_results/rhodeisland_president.xlsx") %>%
+  mutate(state = "Rhode Island") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+southcarolina_president <- read_excel("data/state_election_results/southcarolina_president.xlsx") %>%
+  mutate(state = "South Carolina") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+southdakota_president <- read_excel("data/state_election_results/southdakota_president.xlsx") %>%
+  mutate(state = "South Dakota") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+tennessee_president <- read_excel("data/state_election_results/tennessee_president.xlsx") %>%
+  mutate(state = "Tennessee") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+texas_president <- read_excel("data/state_election_results/texas_president.xlsx") %>%
+  mutate(state = "Texas") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+utah_president <- read_excel("data/state_election_results/utah_president.xlsx") %>%
+  mutate(state = "Utah") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+vermont_president <- read_excel("data/state_election_results/vermont_president.xlsx") %>%
+  mutate(state = "Vermont") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+virginia_president <- read_excel("data/state_election_results/virginia_president.xlsx") %>%
+  mutate(state = "Virginia") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+washington_president <- read_excel("data/state_election_results/washington_president.xlsx") %>%
+  mutate(state = "Washington") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+westvirginia_president <- read_excel("data/state_election_results/westvirginia_president.xlsx") %>%
+  mutate(state = "West Virginia") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+wisconsin_president <- read_excel("data/state_election_results/wisconsin_president.xlsx") %>%
+  mutate(state = "Wisconsin") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+wyoming_president <- read_excel("data/state_election_results/wyoming_president.xlsx") %>%
+  mutate(state = "Wyoming") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+```
+
+
 ## Sources and References
 https://royalsociety.org/news/2020/09/set-c-covid-r-rate/
 
