@@ -157,15 +157,14 @@ connecticut_president <- read_excel("data/state_election_results/connecticut_pre
   mutate(state = "Alabama") %>%
   mutate(dispID = paste(county, state, sep = ", "))
 dc_president <- read_excel("data/state_election_results/dc_president.xlsx") %>%
-  mutate(state = "DC") %>%
-  mutate(dispID = paste(county, state, sep = ", "))
+  mutate(state = "DC")
 delaware_president <- read_excel("data/state_election_results/delaware_president.xlsx") %>%
   mutate(state = "Delaware") %>%
   mutate(dispID = paste(county, state, sep = ", "))
 florida_president <- read_excel("data/state_election_results/florida_president.xlsx") %>%
   mutate(state = "Florida") %>%
   mutate(dispID = paste(county, state, sep = ", "))
-georgia_president <- read_excel("data/state_election_results/georgia_president.xlsx") %>%
+georgia_president <- read_excel("data/state_election_results/georgia-president.xlsx") %>%
   mutate(state = "Georgia") %>%
   mutate(dispID = paste(county, state, sep = ", "))
 hawaii_president <- read_excel("data/state_election_results/hawaii_president.xlsx") %>%
@@ -288,6 +287,109 @@ wisconsin_president <- read_excel("data/state_election_results/wisconsin_preside
 wyoming_president <- read_excel("data/state_election_results/wyoming_president.xlsx") %>%
   mutate(state = "Wyoming") %>%
   mutate(dispID = paste(county, state, sep = ", "))
+
+president_list <- add(
+  alabama_president,
+  arkansas_president,
+  arizona_president,
+  california_president,
+  colorado_president,
+  connecticut_president,
+  delaware_president,
+  florida_president,
+  georgia_president,
+  hawaii_president,
+  idaho_president,
+  illinois_president,
+  indiana_president,
+  iowa_president,
+  kansas_president,
+  kentucky_president,
+  louisiana_president,
+  maine_president,
+  maryland_president,
+  massachusetts_president,
+  michigan_president,
+  minnesota_president,
+  mississippi_president,
+  missouri_president,
+  montana_president,
+  nebraska_president,
+  nevada_president,
+  newhampshire_president,
+  newjersey_president,
+  newmexico_president,
+  newyork_president,
+  northcarolina_president,
+  northdakota_president,
+  ohio_president,
+  oklahoma_president,
+  oregon_president,
+  pennsylvania_president,
+  rhodeisland_president,
+  southcarolina_president,
+  southdakota_president,
+  tennessee_president,
+  texas_president,
+  utah_president,
+  vermont_president,
+  virginia_president,
+  washington_president,
+  westvirginia_president,
+  wisconsin_president,
+  wyoming_president
+)
+
+nation_president <- rbind(alabama_president, 
+           arkansas_president, 
+           arizona_president, 
+           california_president, 
+           colorado_president, 
+           connecticut_president, 
+           delaware_president, 
+           florida_president, 
+           georgia_president, 
+           hawaii_president, 
+           idaho_president, 
+           illinois_president, 
+           indiana_president, 
+           iowa_president, 
+           kansas_president, 
+           kentucky_president, 
+           louisiana_president, 
+           maine_president, 
+           maryland_president, 
+           massachusetts_president, 
+           michigan_president, 
+           minnesota_president, 
+           mississippi_president, 
+           missouri_president, 
+           montana_president, 
+           nebraska_president, 
+           nevada_president, 
+           newhampshire_president, 
+           newjersey_president, 
+           newmexico_president, 
+           newyork_president, 
+           northcarolina_president, 
+           northdakota_president, 
+           ohio_president, 
+           oklahoma_president, 
+           oregon_president, 
+           pennsylvania_president, 
+           rhodeisland_president, 
+           southcarolina_president, 
+           southdakota_president, 
+           tennessee_president, 
+           texas_president, 
+           utah_president, 
+           vermont_president, 
+           virginia_president, 
+           washington_president, 
+           westvirginia_president, 
+           wisconsin_president, 
+           wyoming_president)
+
 ```
 
 
