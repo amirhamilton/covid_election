@@ -13,6 +13,9 @@ library(ggplot2)
 library("readxl")
 library(rvest)
 library(pdftools)
+library(urbnmapr)
+
+devtools::install_github("UrbanInstitute/urbnmapr")
 
 owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv") %>%
   filter(iso_code == "USA")
@@ -99,16 +102,37 @@ covid_county <- read_excel("data/rt_table_export.xlsx") %>%
   filter(resolution == "county") %>%
   arrange(date) 
 
-
-
-union_election_day_r <- lm(trump.votes ~ covid_county$Rt_plot, data = )
-
-
 alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
   mutate(state = "Alabama") %>%
   mutate(dispID = paste(county, state, sep = ", "))
 
-alabama_model <- 
+alabama_model <- covid_county %>%
+  merge(alabama_president, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  mutate(county_name = paste(county, "County")) %>%
+  filter(date == "2020-11-04")
+
+
+
+ggplot(alabama_model, aes(x = trump.percent, y = Rt_plot)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+ggplot(alabama_model, aes(x = biden.percent, y = Rt_plot)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+union_election_day_r <- lm(trump.percent ~ Rt_plot, data = alabama_model)
+union_election_day_r
+
+
+....
+county_data <- left_join(alabama_model, counties, by = "county_name") 
+
+county_data %>%
+  ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
+    geom_polygon(color = "#ffffff", size = 0.05) +
+    coord_map(projection = "albers", lat0 = 39, lat1 = 45)
 
 ```
 
