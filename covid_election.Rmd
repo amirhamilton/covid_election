@@ -11,16 +11,18 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
 library(tidyverse)
-library(ggplot2)
 library("readxl")
 library(rvest)
 library(pdftools)
 library(urbnmapr)
+library(urbnthemes)
 
 devtools::install_github("UrbanInstitute/urbnmapr")
 
 owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv") %>%
   filter(iso_code == "USA")
+
+
 ```
 
 ## Introduction
@@ -37,191 +39,35 @@ ggplot(usa_owid, aes(x = as.Date(date), y = new_cases)) +
        title = "Total New Cases in the US by Date From October 1 to December 11")
 ```
 
-# Generation Time (T)
-
-T, the generation time, is the time between infection events in an infector-infectee pair of individuals. T influences the time scale of the pandemic's growth and decay. Observing or determining the exact time of infection can be difficult since people often do not get tested until they start showing symptoms.
-
-# Serial Interval (s)
-
-Serial interval, s,  is the average time between symptoms of infection in the transmitter to when the person they infect develops symptoms. The problem with s in the Covid-19 pandemic is that many infected people do not show symptoms. 
-
-# Epidemic Growth Rate (r)
-
-The epidemic growth rate, r, is the rate at which new cases are occurring. 
-
-```{r}
-#growth_rate <- read.csv("data/growth_rate.csv")
-```
-
-# Doubling Time (dt)
-
-The doubling time of a pandemic, dt, is related to r. It is amount of time which leads to a doubling of cases (pretty self-explanatory). This number can also tell us the halving time if the number of cases are decreasing.  
-
-In cases where these variables can be experimentally observed, that is preferable than inferring them.
-
-# Parameters
-
-Number of susceptible individuals
-Proportion of asymptomatic individuals
-incubation time ***
-effects of age
-duration from symptom onset to hospitalization or death
-infectiousness of asymptomatic individuals
 
 # Reproduction Number (R)
 
-R, the reproduction number, is a measure of the infectious potential of a disease. If R equals 1, then the number of cases will remain constant. If R is less than 1, then the number of cases are decreasing, and if R is greater than 1 then the number of cases are increasing. Determining R is valuable for public health officials and lawmakers because it tells you what proportion of new infections you need to prevent in order to go from increasing cases to constant or decreasing cases.
+R, the reproduction number, is a measure of the infectious potential of a disease. If R equals 1, then the number of cases will remain constant. If R is less than 1, then the number of cases are decreasing, and thus if R is greater than 1 the number of cases are increasing. Determining R is valuable for public health officials and lawmakers because it tells you what proportion of new infections you need to prevent in order to go from increasing cases to constant or decreasing cases.
 
-R0 (pronounced r nought) represents the reproduction number at the beginning of the pandemic, and Rt is the reproduction number at time t. 
+At a particular time in the pandemic, Rt is written to signify the reproduction number at time t. 
 
-There are several ways to calculate R. I'm just using the data from OWID.
+There are several ways to calculate R, but I'm just using the data from OWID. The formula for R is considered to be different by different epidemiological schools, and can contain numbers such as:
+
+  T -- the generation time-- which is the time between infection events in an infector-infectee pair of individuals; 
+  s -- the serial interval -- which is the average time between symptoms of infection in the transmitter to when the person they infect develops symptoms; 
+  r -- the epidemic growth rate -- which is the rate at which new cases are occurring; 
+  dt -- doubling time -- the amount of time which leads to a doubling of cases; 
+  
+as well as the number of susceptible individuals, proportion of asymptomatic individuals, incubation time, disparate effects by age, duration from symptom onset to hospitalization or death, and the infectiousness of asymptomatic individuals. I'm leaving this calculation up to the experts, especially due to the fact that information changes frequently about these values.
+
+Below is shown a box plot of R from the beginning of October to December 4, the latest day for which OWID has calculated R. A horizonal line of R = 1 shows that during the time period covered in this study, the severity of the pandemic has been increasing every day.
 
 ```{r reproduction.number, echo=FALSE}
 ggplot(usa_owid, aes(x = as.Date(date), y = reproduction_rate)) +
-  geom_col() +
-  labs(x = "Date", y = "R", title = "US Reproduction Rate Over Time") +
+  geom_col(fill = "#a55151") +
+  labs(x = "Date", y = "R", title = "US Reproduction Number (R) Over Time") +
   geom_hline(yintercept = 1)
 ```
 
-You can see that on Sep 11 the reproduction rate surpassed 1 and has remained above 1 since then, indicating a worsening pandemic. 
-
 ## Presidential Election
 
-```{r}
+To conduct my analysis, I had to get the data for election results. In order to achieve a sufficient level of granularity I gathered data on the county level. I could not find a dataset with all the election results for president by county, unfortunately, so I manually scraped the data from Politico and NBCNews. Another advantage of this method is that the data would be in the same format, since each state released their elections data with different columns, categories, etc. Here, I merged the data from the various excel spreadsheets I created from the US (minus Alaska and DC). Alaska was excluded because election data was unavailable on a county level and DC was excluded because there is no county there. I then read in this state data into individual dataframes, and merged the state dataframes to create a national dataframe of election results.
 
-```
-
-
-## Interactions
-
-In this section I plan on using regressions on a state by state basis to determine the relationship between election turnout and R, the reproduction number. It might be interesting as well to see if there is a relationship between the number of hospital patients or number of icu patients and turnout. 
-
-```{r}
-covid_county <- read_excel("data/rt_table_export.xlsx") %>%
-  filter(resolution == "county") %>%
-  arrange(date) 
-
-alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
-  mutate(state = "Alabama") %>%
-  mutate(dispID = paste(county, state, sep = ", "))
-
-alabama_model <- covid_county %>%
-  merge(alabama_president, covid_county, by.x = "dispID", by.y = "dispID") %>%
-  mutate(date = as.character(date)) %>%
-  mutate(county_name = paste(county, "County")) %>%
-  filter(date == "2020-11-04")
-
-
-
-ggplot(alabama_model, aes(x = trump.percent, y = Rt_plot)) +
-  geom_point() +
-  geom_smooth(method = lm)
-
-ggplot(alabama_model, aes(x = biden.percent, y = Rt_plot)) +
-  geom_point() +
-  geom_smooth(method = lm)
-
-union_election_day_r <- lm(trump.percent ~ Rt_plot, data = alabama_model)
-union_election_day_r
-
-```
-
-## Plot of Rt_plot on Election Day
-```{r}
-ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
-  geom_density()
-```
-
-## something?
-```{r}
-cc_oct_28 <-  covid_county %>%
-  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
-  mutate(date = as.character(date)) %>%
-  filter(date == "2020-10-28") %>%
-  mutate(county_name = paste(county, "County")) %>%
-  mutate(avg = mean(Rt_plot)) %>%
-  mutate(Rt_28 = Rt_plot)
-
-cc_oct_21 <-  covid_county %>%
-  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
-  mutate(date = as.character(date)) %>%
-  filter(date == "2020-10-21") %>%
-  mutate(county_name = paste(county, "County")) %>%
-  mutate(Rt_21 = Rt_plot)
-
-cc_oct_14 <-  covid_county %>%
-  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
-  mutate(date = as.character(date)) %>%
-  filter(date == "2020-10-14") %>%
-  mutate(county_name = paste(county, "County")) %>%
-  mutate(Rt_14 = Rt_plot)
-
-cc_oct_7 <-  covid_county %>%
-  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
-  mutate(date = as.character(date)) %>%
-  filter(date == "2020-10-07") %>%
-  mutate(county_name = paste(county, "County")) %>%
-  mutate(Rt_7 = Rt_plot)
-
-
-```
-
-## Difference in Means for Rt_plot (Nov 4) on Trump Percent and Biden Percent
-```{r}
-Rt_diff_trump <- lm(cc_nov_4$trump.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
-summary(Rt_diff_trump)
-
-Rt_diff_biden <-  lm(cc_nov_4$biden.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
-summary(Rt_diff_biden)
-```
-
-When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The difference in means is 0.022859.
-
-Because the p-value is lower than the standard threshold of alpha = .05 we can reject the null hypothesis that the relaionship of trump.percent to Rt_plot on Election Day is zero. This does not necessarily imply a causal relationship, however. It could be that in a county with high proportions of Trump support people are less likely to take Covid-19 seriorusly, or it could be that living in counties with high Rt_plot would make people more likely to vote for Trump (vote for the chaotic candidate in a chaotic circumstance).
-
-When percentage of Biden votes per county (biden.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant negative/inverse predictor (t = -2.621, p = 0.00887). The overall model fit is R^2 = 0.005097, and the difference in means is -0.020582.
-
-Because the p-value is smaller than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of biden.percent to Rt_plot on Election Day is zero. In comparison to the relationship between trump.percent and Rt_plot, biden.percent is less strongly related to Rt_plot.
-
-## Difference in Means for Rt_plot (Oct 28, 21, 14, 7) on Trump Percent and Biden Percent
-```{r}
-Rt_diff_trump_28 <- lm(cc_oct_28$trump.percent ~ cc_oct_28$Rt_plot, data = cc_oct_28)
-summary(Rt_diff_trump)
-
-Rt_diff_trump_21 <-  lm(cc_oct_21$biden.percent ~ cc_oct_21$Rt_plot, data = cc_oct_21)
-summary(Rt_diff_trump_21)
-
-Rt_diff_trump_14 <-  lm(cc_oct_14$trump.percent ~ cc_oct_14$Rt_plot, data = cc_oct_14)
-summary(Rt_diff_trump_14)
-
-Rt_diff_trump_7 <- lm(cc_oct_7$trump.percent ~ cc_oct_7$Rt_plot, data = cc_oct_7)
-summary(Rt_diff_trump_7)
-```
-
-
-
-## Union of Nov 4 Rt, Oct 28 Rt, Oct 21 Rt, Oct 14 Rt, Oct 7 Rt, trump.percent, biden.percent
-```{r, message = FALSE, warning=FALSE}
-cc_combined_list <- list(cc_nov_4, cc_oct_28, cc_oct_21, cc_oct_14, cc_oct_7)
-cc_combined <- cc_combined_list %>% 
-  reduce(full_join) %>%
-  arrange(by = dispID) %>%
-  subset(select = c(dispID, Rt_4, Rt_28, Rt_21, Rt_14, Rt_7)) %>%
-  group_by(dispID) %>%
-  summarise_each(funs(mean = mean(., na.rm = TRUE)))
-
-cc_combined_2 <- na.omit(cc_combined)
-cc_combined_3 <- merge(president_join, cc_combined_2, by.x = "dispID", by.y = "dispID")
-
-Rt_votes_combined <- lm(cc_combined_3$trump.percent ~ cc_combined_3$Rt_4_mean + cc_combined_3$Rt_28_mean + cc_combined_3$Rt_21_mean + cc_combined_3$Rt_14_mean + cc_combined_3$Rt_4_mean, data = cc_combined_3)
-summary(Rt_votes_combined)
-
-
-```
-
-
-## County Election Results
-Here, I merged the data from the various excel spreadsheets from the US (minus Alaska and DC)
 ```{r, message=FALSE}
 alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
   mutate(state = "Alabama") %>%
@@ -428,7 +274,190 @@ president_list <- list(
 president_join <- president_list %>% reduce(full_join)
 ```
 
-relationship between r on eletion day and trump votes- not sure wht this is
+
+
+## Interactions
+
+I decided to look at the relationship between the Percentage of Trump votes in a county or the Percentage of Biden votes in a county to the R at five different dates: Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7. I chose dates that were multiples of one week prior to election day, as well as election day itself. So, I created five new dataframes created by merging the election results with the covid data on those four days.
+
+```{r}
+cc_nov_4 <- covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-11-04") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_04 = Rt_plot)
+
+cc_oct_28 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-28") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_28 = Rt_plot)
+
+cc_oct_21 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-21") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(Rt_21 = Rt_plot)
+
+cc_oct_14 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-14") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(Rt_14 = Rt_plot)
+
+cc_oct_7 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-07") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(Rt_7 = Rt_plot)
+```
+
+To assist with understanding the national distribution of R on those five days, I have created density plots shown below.
+```{r}
+ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of County-Level R on November 4",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+
+ggplot(data = cc_oct_28, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of County-Level R on October 28",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+
+ggplot(data = cc_oct_21, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of County-Level R on October 21",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+
+ggplot(data = cc_oct_14, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of County-Level R on October 14",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+
+ggplot(data = cc_oct_7, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of County-Level R on October 7",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+```
+
+
+
+
+
+
+```{r}
+covid_county <- read_excel("data/rt_table_export.xlsx") %>%
+  filter(resolution == "county") %>%
+  arrange(date) 
+
+alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
+  mutate(state = "Alabama") %>%
+  mutate(dispID = paste(county, state, sep = ", "))
+
+alabama_model <- covid_county %>%
+  merge(alabama_president, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  mutate(county_name = paste(county, "County")) %>%
+  filter(date == "2020-11-04")
+
+
+
+ggplot(alabama_model, aes(x = trump.percent, y = Rt_plot)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+ggplot(alabama_model, aes(x = biden.percent, y = Rt_plot)) +
+  geom_point() +
+  geom_smooth(method = lm)
+
+union_election_day_r <- lm(trump.percent ~ Rt_plot, data = alabama_model)
+union_election_day_r
+
+```
+
+
+## something?
+
+## Difference in Means for Rt_plot (Nov 4) on Trump Percent and Biden Percent
+```{r}
+Rt_diff_trump <- lm(cc_nov_4$trump.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
+summary(Rt_diff_trump)
+
+Rt_diff_biden <-  lm(cc_nov_4$biden.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
+summary(Rt_diff_biden)
+```
+
+When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The difference in means is 0.022859.
+
+Because the p-value is lower than the standard threshold of alpha = .05 we can reject the null hypothesis that the relaionship of trump.percent to Rt_plot on Election Day is zero. This does not necessarily imply a causal relationship, however. It could be that in a county with high proportions of Trump support people are less likely to take Covid-19 seriorusly, or it could be that living in counties with high Rt_plot would make people more likely to vote for Trump (vote for the chaotic candidate in a chaotic circumstance).
+
+When percentage of Biden votes per county (biden.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant negative/inverse predictor (t = -2.621, p = 0.00887). The overall model fit is R^2 = 0.005097, and the difference in means is -0.020582.
+
+Because the p-value is smaller than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of biden.percent to Rt_plot on Election Day is zero. In comparison to the relationship between trump.percent and Rt_plot, biden.percent is less strongly related to Rt_plot.
+
+## Difference in Means for Rt_plot (Oct 28, 21, 14, 7) on Trump Percent and Biden Percent
+```{r}
+Rt_diff_trump_28 <- lm(cc_oct_28$trump.percent ~ cc_oct_28$Rt_plot, data = cc_oct_28)
+summary(Rt_diff_trump)
+
+Rt_diff_trump_21 <-  lm(cc_oct_21$biden.percent ~ cc_oct_21$Rt_plot, data = cc_oct_21)
+summary(Rt_diff_trump_21)
+
+Rt_diff_trump_14 <-  lm(cc_oct_14$trump.percent ~ cc_oct_14$Rt_plot, data = cc_oct_14)
+summary(Rt_diff_trump_14)
+
+Rt_diff_trump_7 <- lm(cc_oct_7$trump.percent ~ cc_oct_7$Rt_plot, data = cc_oct_7)
+summary(Rt_diff_trump_7)
+```
+
+
+
+## Union of Nov 4 Rt, Oct 28 Rt, Oct 21 Rt, Oct 14 Rt, Oct 7 Rt, trump.percent, biden.percent
+```{r, message = FALSE, warning=FALSE}
+cc_combined_list <- list(cc_nov_4, cc_oct_28, cc_oct_21, cc_oct_14, cc_oct_7)
+cc_combined <- cc_combined_list %>% 
+  reduce(full_join) %>%
+  arrange(by = dispID) %>%
+  subset(select = c(dispID, Rt_4, Rt_28, Rt_21, Rt_14, Rt_7)) %>%
+  group_by(dispID) %>%
+  summarise_each(funs(mean = mean(., na.rm = TRUE)))
+
+cc_combined_2 <- na.omit(cc_combined)
+cc_combined_3 <- merge(president_join, cc_combined_2, by.x = "dispID", by.y = "dispID")
+
+Rt_votes_combined <- lm(cc_combined_3$trump.percent ~ cc_combined_3$Rt_4_mean + cc_combined_3$Rt_28_mean + cc_combined_3$Rt_21_mean + cc_combined_3$Rt_14_mean + cc_combined_3$Rt_4_mean, data = cc_combined_3)
+summary(Rt_votes_combined)
+
+
+```
+
+
+## R on a County Level
+
+To achieve a more granular perspective on R on November 4 (Election Day), a map is shown below, where darker shades indicate higher R. Some counties are missing due to the incompleteness of the dataset. OWID did not calculate R in counties that did not have a sufficiently high case count. 
+
 ```{r, echo = FALSE}
 cc_nov_4 <- covid_county %>%
   merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
@@ -438,16 +467,17 @@ cc_nov_4 <- covid_county %>%
   mutate(avg = mean(Rt_plot)) %>%
   mutate(Rt_4 = Rt_plot)
 
-county_nov_4 <- left_join(cc_nov_4, counties, by = "county_name")
-
-county_nov_4 %>%
+cc_nov_4 <- countydata %>%
 ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
   geom_polygon(color = "#ffffff", size = 0.05) +
-  coord_map(projection = "albers", lat0 = 39, lat1 = 45)
-
-
-##find correlation between county_nov_4$Rt_plot and county_nov_4$trump.percent
+  theme_bw() +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45) +
+  labs(title = "Reproduction Number on Election Day (Nov 4)", 
+       y = "Latitude",
+       x = "Longitude") 
 ```
+
+
 
 
 ## Sources and References
