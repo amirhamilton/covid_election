@@ -2,7 +2,9 @@
 title: "Effect of Covid 19 on Voting Patterns in the 2020 US Presidential Election"
 author: "Amir Hamilton"
 date: "11/19/2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -51,7 +53,7 @@ Serial interval, s,  is the average time between symptoms of infection in the tr
 The epidemic growth rate, r, is the rate at which new cases are occurring. 
 
 ```{r}
-growth_rate <- read.csv("data/growth_rate.csv")
+#growth_rate <- read.csv("data/growth_rate.csv")
 ```
 
 # Doubling Time (dt)
@@ -128,7 +130,8 @@ union_election_day_r
 ```
 
 ## County Election Results
-```{r, echo=FALSE}
+Here, I merged the data from the various excel spreadsheets from the US (minus Alaska and DC)
+```{r, message=FALSE}
 alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
   mutate(state = "Alabama") %>%
   mutate(dispID = paste(county, state, sep = ", "))
@@ -335,7 +338,7 @@ president_join <- president_list %>% reduce(full_join)
 ```
 
 relationship between r on eletion day and trump votes
-```{r}
+```{r, echo = FALSE}
 cc_nov_4 <- covid_county %>%
   merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
   mutate(date = as.character(date)) %>%
@@ -350,7 +353,7 @@ ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
   coord_map(projection = "albers", lat0 = 39, lat1 = 45)
 
 
-
+##find correlation between county_nov_4$Rt_plot and county_nov_4$trump.percent
 ```
 
 
