@@ -125,19 +125,10 @@ ggplot(alabama_model, aes(x = biden.percent, y = Rt_plot)) +
 union_election_day_r <- lm(trump.percent ~ Rt_plot, data = alabama_model)
 union_election_day_r
 
-
-....
-county_data <- left_join(alabama_model, counties, by = "county_name") 
-
-county_data %>%
-  ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
-    geom_polygon(color = "#ffffff", size = 0.05) +
-    coord_map(projection = "albers", lat0 = 39, lat1 = 45)
-
 ```
 
 ## County Election Results
-```{r}
+```{r, echo=FALSE}
 alabama_president <- read_excel("data/state_election_results/alabama_president.xlsx") %>%
   mutate(state = "Alabama") %>%
   mutate(dispID = paste(county, state, sep = ", "))
@@ -288,7 +279,7 @@ wyoming_president <- read_excel("data/state_election_results/wyoming_president.x
   mutate(state = "Wyoming") %>%
   mutate(dispID = paste(county, state, sep = ", "))
 
-president_list <- add(
+president_list <- list(
   alabama_president,
   arkansas_president,
   arizona_president,
@@ -340,56 +331,29 @@ president_list <- add(
   wyoming_president
 )
 
-nation_president <- rbind(alabama_president, 
-           arkansas_president, 
-           arizona_president, 
-           california_president, 
-           colorado_president, 
-           connecticut_president, 
-           delaware_president, 
-           florida_president, 
-           georgia_president, 
-           hawaii_president, 
-           idaho_president, 
-           illinois_president, 
-           indiana_president, 
-           iowa_president, 
-           kansas_president, 
-           kentucky_president, 
-           louisiana_president, 
-           maine_president, 
-           maryland_president, 
-           massachusetts_president, 
-           michigan_president, 
-           minnesota_president, 
-           mississippi_president, 
-           missouri_president, 
-           montana_president, 
-           nebraska_president, 
-           nevada_president, 
-           newhampshire_president, 
-           newjersey_president, 
-           newmexico_president, 
-           newyork_president, 
-           northcarolina_president, 
-           northdakota_president, 
-           ohio_president, 
-           oklahoma_president, 
-           oregon_president, 
-           pennsylvania_president, 
-           rhodeisland_president, 
-           southcarolina_president, 
-           southdakota_president, 
-           tennessee_president, 
-           texas_president, 
-           utah_president, 
-           vermont_president, 
-           virginia_president, 
-           washington_president, 
-           westvirginia_president, 
-           wisconsin_president, 
-           wyoming_president)
+president_join <- president_list %>% reduce(full_join)
+```
 
+relationship between r on eletion day and trump votes
+```{r}
+cc_nov_4 <- covid_county %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-11-04")
+  
+ggplot(data = cc_nov_4, mapping = aes(long, lat, group = group, fill = Rt_plot)) +
+  geom_polygon(color = "#fffff", size = 0.05) +
+  coord_map(projection = "albers", lat0 = 39, lat1 = 45)
+
+
+
+
+
+
+county_data <- left_join(alabama_model, counties, by = "county_name") 
+county_data %>%
+  ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
+    geom_polygon(color = "#ffffff", size = 0.05) +
+    coord_map(projection = "albers", lat0 = 39, lat1 = 45)
 ```
 
 
