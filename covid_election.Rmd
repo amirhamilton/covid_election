@@ -337,23 +337,20 @@ president_join <- president_list %>% reduce(full_join)
 relationship between r on eletion day and trump votes
 ```{r}
 cc_nov_4 <- covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
   mutate(date = as.character(date)) %>%
-  filter(date == "2020-11-04")
-  
-ggplot(data = cc_nov_4, mapping = aes(long, lat, group = group, fill = Rt_plot)) +
-  geom_polygon(color = "#fffff", size = 0.05) +
+  filter(date == "2020-11-04") %>%
+  mutate(county_name = paste(county, "County"))
+
+county_nov_4 <- left_join(cc_nov_4, counties, by = "county_name")
+
+county_nov_4 %>%
+ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
+  geom_polygon(color = "#ffffff", size = 0.05) +
   coord_map(projection = "albers", lat0 = 39, lat1 = 45)
 
 
 
-
-
-
-county_data <- left_join(alabama_model, counties, by = "county_name") 
-county_data %>%
-  ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
-    geom_polygon(color = "#ffffff", size = 0.05) +
-    coord_map(projection = "albers", lat0 = 39, lat1 = 45)
 ```
 
 
