@@ -129,6 +129,27 @@ union_election_day_r
 
 ```
 
+## Boxplot of Rt_plot on Election Day
+```{r}
+ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
+  geom_density()
+```
+
+## Correlation Between Rt_plot on Election Day and Trump Vote Percentage
+```{r}
+
+```
+
+## Difference in Means for Rt_plot on Trump Percent and Biden Percent
+```{r}
+Rt_diff_trump <- lm(cc_nov_4$Rt_plot ~ cc_nov_4$trump.percent, data = cc_nov_4)
+summary(Rt_diff_trump)
+
+Rt_diff_biden <-  lm(cc_nov_4$Rt_plot ~ cc_nov_4$biden.percent, data = cc_nov_4)
+summary(Rt_diff_biden)
+```
+
+
 ## County Election Results
 Here, I merged the data from the various excel spreadsheets from the US (minus Alaska and DC)
 ```{r, message=FALSE}
@@ -373,8 +394,3 @@ County data was manually scraped from nbcnews.com and politico.com on 2020-11-19
 For reproduction rate by county, the dataset was too large for github so I manually reduced the size to exclude data from before November 15 and to exclude counties/dates that had too small of a sample size to produce a reproduction rate, as determined by the study. 
 
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
