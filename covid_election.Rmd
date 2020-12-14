@@ -28,7 +28,13 @@ owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/pu
 
 ## Introduction
 
-The main event that has characterized 2020 in the US and the world has been the Covid-19 Pandemic. In the US, there have been three main waves: Spring (March and April), Summer (July), and Winter (October - Present). Life for people in the US has been changed drastically, but the goal of this project is to see whether Covid has had any discernible effects on the 2020 presidential election. To begin, below is show a bar plot of new covid cases per day in the winter wave, which is currently ongoing. Approximately one month of data preceding election day is shown, as are the roughly one and a half months that have passed between then and now (December 14, 2020). Data has been read in from Our World in Data's (OWID) daily updated dataset. 
+One way that social scientists are able to interact with a lay audience is by discussing the factors behind elections in the US. Some of the proposed factors include: the unequal distribution of voting machines by state, community, and race; a candidate's charisma and the perception of their character; the strength of the economy; etc. In general, these factors fall into two categories: a candidate's traits or societal trends. 
+
+This paper will look at the influence of the Covid-19 pandemic on the results of the 2020 Presidential Election. Specifically, it will examine whether there is a relationship between Covid numbers and the percentage of Trump or Biden votes on a county level.
+
+Covid-19 has defined the world in 2020, with millions of deaths worldwide and widespread economic chaos. In the US, there have been three main waves of infection: Spring (March and April), Summer (July), and Winter (October - Present). 
+
+To begin, a bar plot of new covid cases per day in the winter wave, which is currently ongoing, is shown on the next page. Approximately one month of data preceding election day (November 4, 2020) is shown, as are the roughly one and a half months that have passed between then and now (December 14, 2020). Data has been read in from Our World in Data's (OWID) daily updated dataset. 
 
 
 ```{r total}
@@ -40,13 +46,18 @@ ggplot(usa_owid, aes(x = as.Date(date), y = new_cases)) +
        y = "New Cases", 
        title = "Total New Cases in the US by Date From October 1 to December 11")
 ```
+
+
+
 \newpage
 
 # Reproduction Number (*R*)
 
-*R*, the reproduction number, is a measure of the infectious potential of a disease. If *R* equals 1, then the number of cases will remain constant. If *R* is less than 1, then the number of cases are decreasing, and thus if *R* is greater than 1 the number of cases are increasing. Determining *R* is valuable for public health officials and lawmakers because it tells you what proportion of new infections you need to prevent in order to go from increasing cases to constant or decreasing cases.
+The particular Covid-related statistic this paper will be looking at is *R*, the reproduction number.
 
-At a particular time in the pandemic, *Rt* is written to signify the reproduction number at time *t*. 
+*R* is a measure of the infectious potential of a disease. If *R* equals 1, then the number of cases will remain constant. If *R* is less than 1, then the number of cases are decreasing, and thus if *R* is greater than 1 the number of cases are increasing. Determining *R* is valuable for public health officials and lawmakers because it tells you what proportion of new infections you need to prevent in order to go from increasing cases to constant or decreasing cases.
+
+At a particular time in the pandemic, *Rt* is written to signify the reproduction number at time *t*.
 
 There are several ways to calculate *R*, but I'm just using the data from OWID. The formula for *R* is considered to be different by different epidemiological schools, and can contain numbers such as:
 
@@ -68,6 +79,57 @@ ggplot(usa_owid, aes(x = as.Date(date), y = reproduction_rate)) +
   labs(x = "Date", y = "R", title = "US Reproduction Number (R) Over Time") +
   geom_hline(yintercept = 1)
 ```
+
+To assist with understanding the national distribution of *R*, I have created a sample density plot for November 4 shown below. The median *R* is above zero.
+
+```{r, message=FALSE}
+ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
+  geom_density() +
+  labs(title = "Distribution of R Numbers of US Counties",
+       x = "R",
+       y = "Density (arbitrary scale)") +
+  theme_minimal() +
+  coord_cartesian(xlim = c(.4, 3))
+  # 
+  # p2 <- ggplot(data = cc_oct_28, aes(x = Rt_plot)) +
+  #   geom_density() +
+  #   labs(title = "October 28",
+  #        x = "R",
+  #        y = "Density (arbitrary scale)") +
+  #   theme_minimal() +
+  #   coord_cartesian(xlim = c(.4, 3))
+  # 
+  # p3 <- ggplot(data = cc_oct_21, aes(x = Rt_plot)) +
+  #   geom_density() +
+  #   labs(title = "October 21",
+  #        x = "R",
+  #        y = "Density (arbitrary scale)") +
+  #   theme_minimal() +
+  #   coord_cartesian(xlim = c(.4, 3))
+  # 
+  # p4 <- ggplot(data = cc_oct_14, aes(x = Rt_plot)) +
+  #   geom_density() +
+  #   labs(title = "October 14",
+  #        x = "R",
+  #        y = "Density (arbitrary scale)") +
+  #   theme_minimal() +
+  #   coord_cartesian(xlim = c(.4, 3))
+  # 
+  # p5 <- ggplot(data = cc_oct_7, aes(x = Rt_plot), size = 3) +
+  #   geom_density() +
+  #   labs(title = "October 7",
+  #        x = "R",
+  #        y = "Density (arbitrary scale)") +
+  #   theme_minimal() +
+  #   coord_cartesian(xlim = c(.4, 3))
+  # 
+  # figure <-  ggarrange(p1, p2, p3, p4, p5,
+  #                      ncol = 3, nrow = 2)
+  # figure
+  # 
+
+```
+
 \newpage
 
 ## Presidential Election
@@ -335,57 +397,6 @@ cc_oct_7 <-  covid_county %>%
   mutate(Rt_7 = Rt_plot)
 ```
 
-To assist with understanding the national distribution of *R* on those five days, I have created a sample density plot for November 4 shown below. The median *R* is above zero.
-
-```{r, message=FALSE}
-ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
-  geom_density() +
-  labs(title = "Distribution of R Numbers of US Counties",
-       x = "R",
-       y = "Density (arbitrary scale)") +
-  theme_minimal() +
-  coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p2 <- ggplot(data = cc_oct_28, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 28",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p3 <- ggplot(data = cc_oct_21, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 21",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p4 <- ggplot(data = cc_oct_14, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 14",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p5 <- ggplot(data = cc_oct_7, aes(x = Rt_plot), size = 3) +
-  #   geom_density() +
-  #   labs(title = "October 7",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # figure <-  ggarrange(p1, p2, p3, p4, p5,
-  #                      ncol = 3, nrow = 2)
-  # figure
-  # 
-
-```
-
-\newpage
 
 ## Differences in Means for Percentage of Trump Votes on *R* for Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7
 
@@ -404,9 +415,12 @@ modelsummary::modelsummary(models = Rt_diff_trump_list,
                            title = "Regression Table between Percentage of Trump Votes and R per County")
 ```
 
-When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The difference in means is 0.022859.
+When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The difference in means is 0.023.
 
 Because the p-value is lower than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of trump.percent to Rt_plot on Election Day is zero. This does not necessarily imply a causal relationship, however. It could be that in a county with high proportions of Trump support people are less likely to take Covid-19 seriously, or it could be that living in counties with high Rt_plot would make people more likely to vote for Trump (vote for the chaotic candidate in a chaotic circumstance).
+
+As for the other dates, some things I would like to highlight are that the 
+
 \newpage
 
 ## Differences in Means for Percentage of Biden Votes on R for Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7
@@ -426,9 +440,9 @@ modelsummary::modelsummary(models = Rt_diff_biden_list,
                            title = "Regression Table between Percentage of Biden Votes and R")
 ```
 
-When percentage of Biden votes per county (biden.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant negative/inverse predictor (t = -2.621, p = 0.00887). The overall model fit is R^2 = 0.005097, and the difference in means is -0.020582.
+When percentage of Biden votes per county (biden.percent) was predicted it was found that *R* (Rt_plot) on election day (Nov 4) was a significant negative/inverse predictor (t = -2.621, p = 0.00887). The overall model fit is R^2 = 0.005097, and the difference in means is -0.020582.
 
-Because the p-value is smaller than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of biden.percent to Rt_plot on Election Day is zero. In comparison to the relationship between trump.percent and Rt_plot, biden.percent is less strongly related to Rt_plot.
+Because the p-value is smaller than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of biden.percent to *R* on Election Day is zero. In comparison to the relationship between trump.percent and *R*, biden.percent is less strongly related to *R*.
 
 
 
@@ -464,8 +478,10 @@ ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
 
 
 
+\newpage
 
 ## Sources and References
+
 https://royalsociety.org/news/2020/09/set-c-covid-r-rate/
 
 Chongsuvivatwong, Virasakdi. Analysis of epidemiological data using R and Epicalc. 2008, Hat Yai, Thailand: Chammuang Press.
