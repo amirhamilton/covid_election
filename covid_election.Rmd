@@ -23,21 +23,18 @@ owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/pu
   filter(iso_code == "USA")
 ```
 
-## 1
-Yes, lots of procrastination, and my analyses have not even really been started yet (and I need to make it look more aesthetically pleasing), but here is what I got so far. I've deleted lots of things since I've recently found a far superior dataset, so that is also one of the reasons I don't have much code yet.
-
-Also I'm not sure whether I want to look at Covid 19's effect on voter turnout, number of ballots by mail, % Democrat/Republican, or some other variable. Right now, I guess I would say my hypothesis is that states with a higher R (reproduction number used in epidemiology) will tend to vote more strongly by mail, disregarding states that voted entirely by mail (i.e. states with no in person voting). 
-
-Right now the only graphics I have are for background/introduction by the way. 
-
 ## Introduction
+
+The main event that has characterized 2020 in the US and the world has been the Covid-19 Pandemic. In the US, there have been three main waves: Spring (March and April), Summer (July), and Winter (October - Present). Life for people in the US has been changed drastically, but the goal of this project is to see whether Covid has had any discernible effects on the 2020 presidential election. To begin, below is showm a bar plot of new covid cases per day in the winter wave, which is currently ongoing. Approximately one month of data preceding election day is shown, as are the roughlt one and a half months that have passed between then and now (December 14, 2020). Data has been read in from Our World in Data's (OWID) daily updated dataset. 
 
 ```{r total}
 usa_owid <- owid %>%
-  slice(235:325) ## make this more generalized
+  slice(255:325) ## make this more generalized
 ggplot(usa_owid, aes(x = as.Date(date), y = new_cases)) +
-  geom_col() +
-  labs(x = "Date", y = "New Cases", title = "Total New Cases in the US by Date")
+  geom_col(fill = "#4b52ba") +
+  labs(x = "Date", 
+       y = "New Cases", 
+       title = "Total New Cases in the US by Date From October 1 to December 11")
 ```
 
 # Generation Time (T)
@@ -465,6 +462,8 @@ https://ourworldindata.org/coronavirus
 https://github.com/lin-lab/COVID19-Viz/tree/master/clean_data
 
 County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data.
+
+Dong, E., Du, H., & Gardner, L. (2020). An interactive web-based dashboard to track COVID-19 in real time. The Lancet infectious diseases, 20(5), 533-534.
 
 For reproduction rate by county, the dataset was too large for github so I manually reduced the size to exclude data from before November 15 and to exclude counties/dates that had too small of a sample size to produce a reproduction rate, as determined by the study. 
 
