@@ -1,7 +1,7 @@
 ---
 title: "Effect of Covid 19 on Voting Patterns in the 2020 US Presidential Election"
 author: "Amir Hamilton"
-date: "11/19/2020"
+date: "12/14/2020"
 output:
   pdf_document: default
   html_document: default
@@ -30,7 +30,9 @@ owid <- read.csv("https://raw.githubusercontent.com/owid/covid-19-data/master/pu
 
 One way that social scientists are able to interact with a lay audience is by discussing the factors behind elections in the US. Some of the proposed factors include: the unequal distribution of voting machines by state, community, and race; a candidate's charisma and the perception of their character; the strength of the economy; etc. In general, these factors fall into two categories: a candidate's traits or societal trends. 
 
-This paper will look at the influence of the Covid-19 pandemic on the results of the 2020 Presidential Election. Specifically, it will examine whether there is a relationship between Covid numbers and the percentage of Trump or Biden votes on a county level.
+This paper will look at the influence of the Covid-19 pandemic on the results of the 2020 Presidential Election. Specifically, it will examine whether there is a relationship between Covid numbers and the percentage of Trump or Biden votes on a county level. 
+
+The null hypothesis is that average treatment effect of *R* is 0. I expect that Covid reproduction number (*R*) will be a strong predictor for the percent of votes for Trump. This paper will use linear regression to estimate the treatment effect. 
 
 Covid-19 has defined the world in 2020, with millions of deaths worldwide and widespread economic chaos. In the US, there have been three main waves of infection: Spring (March and April), Summer (July), and Winter (October - Present). 
 
@@ -78,56 +80,6 @@ ggplot(usa_owid, aes(x = as.Date(date), y = reproduction_rate)) +
   geom_col(fill = "#a55151") +
   labs(x = "Date", y = "R", title = "US Reproduction Number (R) Over Time") +
   geom_hline(yintercept = 1)
-```
-
-To assist with understanding the national distribution of *R*, I have created a sample density plot for November 4 shown below. The median *R* is above zero.
-
-```{r, message=FALSE}
-ggplot(data = cc_nov_4, aes(x = Rt_plot)) +
-  geom_density() +
-  labs(title = "Distribution of R Numbers of US Counties",
-       x = "R",
-       y = "Density (arbitrary scale)") +
-  theme_minimal() +
-  coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p2 <- ggplot(data = cc_oct_28, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 28",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p3 <- ggplot(data = cc_oct_21, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 21",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p4 <- ggplot(data = cc_oct_14, aes(x = Rt_plot)) +
-  #   geom_density() +
-  #   labs(title = "October 14",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # p5 <- ggplot(data = cc_oct_7, aes(x = Rt_plot), size = 3) +
-  #   geom_density() +
-  #   labs(title = "October 7",
-  #        x = "R",
-  #        y = "Density (arbitrary scale)") +
-  #   theme_minimal() +
-  #   coord_cartesian(xlim = c(.4, 3))
-  # 
-  # figure <-  ggarrange(p1, p2, p3, p4, p5,
-  #                      ncol = 3, nrow = 2)
-  # figure
-  # 
-
 ```
 
 \newpage
@@ -395,69 +347,275 @@ cc_oct_7 <-  covid_county %>%
   filter(date == "2020-10-07") %>%
   mutate(county_name = paste(county, "County")) %>%
   mutate(Rt_7 = Rt_plot)
+
+cc_nov_3 <- covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-11-03") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_03 = Rt_plot)
+
+cc_nov_2 <- covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-11-02") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_02 = Rt_plot)
+
+cc_nov_1 <- covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-11-01") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_01 = Rt_plot)
+
+cc_oct_31 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-31") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_31 = Rt_plot)
+
+cc_oct_30 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-30") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_30 = Rt_plot)
+
+cc_oct_29 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-29") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_29 = Rt_plot)
+
+cc_oct_27 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-27") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_27 = Rt_plot)
+
+cc_oct_26 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-26") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_26 = Rt_plot)
+
+cc_oct_25 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-25") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_25 = Rt_plot)
+
+cc_oct_24 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-24") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_24 = Rt_plot)
+
+cc_oct_23 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-23") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_23 = Rt_plot)
+
+cc_oct_22 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-22") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_22 = Rt_plot)
+
+cc_oct_20 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-20") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_20 = Rt_plot)
+
+cc_oct_19 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-19") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_19 = Rt_plot)
+
+cc_oct_18 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-18") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_18 = Rt_plot)
+
+cc_oct_17 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-17") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_17 = Rt_plot)
+
+cc_oct_16 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-16") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_16 = Rt_plot)
+
+cc_oct_15 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-15") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_15 = Rt_plot)
+
+cc_oct_13 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-13") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_13 = Rt_plot)
+
+cc_oct_12 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-12") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_12 = Rt_plot)
+
+cc_oct_11 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-11") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_11 = Rt_plot)
+
+cc_oct_10 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-10") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_10 = Rt_plot)
+
+cc_oct_9 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-09") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_09 = Rt_plot)
+
+cc_oct_8 <-  covid_county %>%
+  merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
+  mutate(date = as.character(date)) %>%
+  filter(date == "2020-10-08") %>%
+  mutate(county_name = paste(county, "County")) %>%
+  mutate(avg = mean(Rt_plot)) %>%
+  mutate(Rt_08 = Rt_plot)
 ```
 
 
-## Differences in Means for Percentage of Trump Votes on *R* for Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7
+## Treatment Effect of *R* On Election Day (Nov 4) on Percentage of Trump Votes 
 
 ```{r, message=FALSE, echo=FALSE}
-Rt_diff_trump_4 <- lm(cc_nov_4$trump.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
-Rt_diff_trump_28 <- lm(cc_oct_28$trump.percent ~ cc_oct_28$Rt_plot, data = cc_oct_28)
-Rt_diff_trump_21 <-  lm(cc_oct_21$biden.percent ~ cc_oct_21$Rt_plot, data = cc_oct_21)
-Rt_diff_trump_14 <-  lm(cc_oct_14$trump.percent ~ cc_oct_14$Rt_plot, data = cc_oct_14)
-Rt_diff_trump_7 <- lm(cc_oct_7$trump.percent ~ cc_oct_7$Rt_plot, data = cc_oct_7)
+Rt_diff_trump_lists <-  list(
+Rt_diff_trump_4 <- lm(cc_nov_4$trump.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4),
+Rt_diff_trump_3 <- lm(cc_nov_3$trump.percent ~ cc_nov_3$Rt_plot, data = cc_nov_3),
+Rt_diff_trump_2 <- lm(cc_nov_2$trump.percent ~ cc_nov_2$Rt_plot, data = cc_nov_2),
+Rt_diff_trump_1 <- lm(cc_nov_1$trump.percent ~ cc_nov_1$Rt_plot, data = cc_nov_1),
+Rt_diff_trump_31 <- lm(cc_oct_31$trump.percent ~ cc_oct_31$Rt_plot, data = cc_oct_31),
+Rt_diff_trump_30 <- lm(cc_oct_30$trump.percent ~ cc_oct_30$Rt_plot, data = cc_oct_30),
+Rt_diff_trump_28 <- lm(cc_oct_28$trump.percent ~ cc_oct_28$Rt_plot, data = cc_oct_28),
+Rt_diff_trump_29 <- lm(cc_oct_29$trump.percent ~ cc_oct_29$Rt_plot, data = cc_oct_29),
+Rt_diff_trump_27 <- lm(cc_oct_27$trump.percent ~ cc_oct_27$Rt_plot, data = cc_oct_27),
+Rt_diff_trump_26 <- lm(cc_oct_26$trump.percent ~ cc_oct_26$Rt_plot, data = cc_oct_26),
+Rt_diff_trump_25 <- lm(cc_oct_25$trump.percent ~ cc_oct_25$Rt_plot, data = cc_oct_25),
+Rt_diff_trump_24 <- lm(cc_oct_24$trump.percent ~ cc_oct_24$Rt_plot, data = cc_oct_24),
+Rt_diff_trump_23 <- lm(cc_oct_23$trump.percent ~ cc_oct_23$Rt_plot, data = cc_oct_23),
+Rt_diff_trump_22 <- lm(cc_oct_22$trump.percent ~ cc_oct_22$Rt_plot, data = cc_oct_22),
+Rt_diff_trump_21 <-  lm(cc_oct_21$biden.percent ~ cc_oct_21$Rt_plot, data = cc_oct_21),
+Rt_diff_trump_20 <- lm(cc_oct_20$trump.percent ~ cc_oct_20$Rt_plot, data = cc_oct_20),
+Rt_diff_trump_19 <- lm(cc_oct_19$trump.percent ~ cc_oct_19$Rt_plot, data = cc_oct_19),
+Rt_diff_trump_18 <- lm(cc_oct_18$trump.percent ~ cc_oct_18$Rt_plot, data = cc_oct_18),
+Rt_diff_trump_17 <- lm(cc_oct_17$trump.percent ~ cc_oct_17$Rt_plot, data = cc_oct_17),
+Rt_diff_trump_16 <- lm(cc_oct_16$trump.percent ~ cc_oct_16$Rt_plot, data = cc_oct_16),
+Rt_diff_trump_15 <- lm(cc_oct_15$trump.percent ~ cc_oct_15$Rt_plot, data = cc_oct_15),
+Rt_diff_trump_14 <-  lm(cc_oct_14$trump.percent ~ cc_oct_14$Rt_plot, data = cc_oct_14),
+Rt_diff_trump_13 <- lm(cc_oct_13$trump.percent ~ cc_oct_13$Rt_plot, data = cc_oct_13),
+Rt_diff_trump_12 <- lm(cc_oct_12$trump.percent ~ cc_oct_12$Rt_plot, data = cc_oct_12),
+Rt_diff_trump_11 <- lm(cc_oct_11$trump.percent ~ cc_oct_11$Rt_plot, data = cc_oct_11),
+Rt_diff_trump_10 <- lm(cc_oct_10$trump.percent ~ cc_oct_10$Rt_plot, data = cc_oct_10),
+Rt_diff_trump_9 <- lm(cc_oct_9$trump.percent ~ cc_oct_9$Rt_plot, data = cc_oct_9),
+Rt_diff_trump_8 <- lm(cc_oct_8$trump.percent ~ cc_oct_8$Rt_plot, data = cc_oct_8),
+Rt_diff_trump_7 <- lm(cc_oct_7$trump.percent ~ cc_oct_7$Rt_plot, data = cc_oct_7))
 
-Rt_diff_trump_list <-  list(Rt_diff_trump_4, Rt_diff_trump_28, Rt_diff_trump_21, Rt_diff_trump_14, Rt_diff_trump_7)
-names(Rt_diff_trump_list) <- c("Nov 4", "Oct 28", "Oct 21", "Oct 14", "Oct 7")
+modelsummary::modelsummary(models = Rt_diff_trump_4,
+                           statistic = "std.error",
+                           stars = TRUE,
+                           title = "Regression Table between Percentage of Trump Votes and R on Nov 4")
 
-modelsummary::modelsummary(models = Rt_diff_trump_list, 
-                           stars = TRUE, 
-                           title = "Regression Table between Percentage of Trump Votes and R per County")
+names(Rt_diff_trump_lists) <- c("Nov 4", "Nov 3", "Nov 2", "Nov 1", "Oct 31", "Oct 30", "Oct 29", "Oct 28", "Oct 27", "Oct 26", "Oct 25", "Oct 24", "Oct 23", "Oct 22", "Oct 21", "Oct 20", "Oct 19", "Oct 18", "Oct 17", "Oct 16", "Oct 15", "Oct 14", "Oct 13", "Oct 12", "Oct 11", "Oct 10", "Oct 9", "Oct 8", "Oct 7")
+
+# modelsummary::modelsummary(models = Rt_diff_trump_lists, 
+#                            statistic = "std.error", 
+#                            stars = TRUE, 
+#                            title = "Regression Table between Percentage of Trump Votes and R per County")
+
+trump_summary <- read_excel("data/trump.model.manual.xlsx") %>%
+  mutate(date = as.Date(date, format = "%Y-%m-%d")) %>%
+  mutate(date = format(date, "%m-%d")) 
+
+require(knitr)
+kable(trump_summary,
+      col.names = c("Date", "Treatment Effect"),
+      caption = "Relationship Between R and Trump Percent by Date")
+
 ```
 
-When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The difference in means is 0.023.
+When percentage of Trump votes per county (trump.percent) was predicted it was found that Rt_plot on election day (Nov 4) was a significant  predictor (t = 2.892, p = 0.00388). The overall model fit is R^2 = 0.0062. The treatment effect is 0.023. I have shown a list of *R* values for approximately one month preceding the election. 
 
 Because the p-value is lower than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of trump.percent to Rt_plot on Election Day is zero. This does not necessarily imply a causal relationship, however. It could be that in a county with high proportions of Trump support people are less likely to take Covid-19 seriously, or it could be that living in counties with high Rt_plot would make people more likely to vote for Trump (vote for the chaotic candidate in a chaotic circumstance).
 
-As for the other dates, some things I would like to highlight are that the 
+## Treatment Effect of *R* Over the Month on Percentage of Trump Votes 
+
+The data in the table shown below suggests that *R* does relate to Trump percent, with varying strengths based on the date. However, this may be due to (1) delays in reporting covid statistics and (2) a surge in people looking to get tested in the days before Thanksgiving.
 
 \newpage
 
-## Differences in Means for Percentage of Biden Votes on R for Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7
 
-```{r, message=FALSE}
-Rt_diff_biden_4 <- lm(cc_nov_4$biden.percent ~ cc_nov_4$Rt_plot, data = cc_nov_4)
-Rt_diff_biden_28 <- lm(cc_oct_28$biden.percent ~ cc_oct_28$Rt_plot, data = cc_oct_28)
-Rt_diff_biden_21 <-  lm(cc_oct_21$biden.percent ~ cc_oct_21$Rt_plot, data = cc_oct_21)
-Rt_diff_biden_14 <-  lm(cc_oct_14$biden.percent ~ cc_oct_14$Rt_plot, data = cc_oct_14)
-Rt_diff_biden_7 <- lm(cc_oct_7$biden.percent ~ cc_oct_7$Rt_plot, data = cc_oct_7)
-
-Rt_diff_biden_list <-  list(Rt_diff_biden_4, Rt_diff_biden_28, Rt_diff_biden_21, Rt_diff_biden_14, Rt_diff_biden_7)
-names(Rt_diff_biden_list) <- c("Nov 4", "Oct 28", "Oct 21", "Oct 14", "Oct 7")
-
-modelsummary::modelsummary(models = Rt_diff_biden_list, 
-                           stars = TRUE, 
-                           title = "Regression Table between Percentage of Biden Votes and R")
-```
-
-When percentage of Biden votes per county (biden.percent) was predicted it was found that *R* (Rt_plot) on election day (Nov 4) was a significant negative/inverse predictor (t = -2.621, p = 0.00887). The overall model fit is R^2 = 0.005097, and the difference in means is -0.020582.
-
-Because the p-value is smaller than the standard threshold of alpha = .05 we can reject the null hypothesis that the relationship of biden.percent to *R* on Election Day is zero. In comparison to the relationship between trump.percent and *R*, biden.percent is less strongly related to *R*.
-
-
-
-
-
-
-
-
-\newpage
-
-## R on a County Level
-
-To achieve a more granular perspective on R on November 4 (Election Day), a map is shown below, where darker shades indicate higher R. Some counties are missing due to the incompleteness of the dataset. OWID did not calculate R in counties that did not have a sufficiently high case count. 
 
 ```{r, echo = FALSE, message=FALSE}
+## R on a County Level
+
+# To achieve a more granular perspective on R on November 4 (Election Day), a map is shown below, where darker shades indicate higher R. Some counties are missing due to the incompleteness of the dataset. OWID did not calculate R in counties that did not have a sufficiently high case count.
+
 cc_nov_4 <- covid_county %>%
   merge(president_join, covid_county, by.x = "dispID", by.y = "dispID") %>%
   mutate(date = as.character(date)) %>%
@@ -476,26 +634,18 @@ ggplot(aes(long, lat, group = group, fill = Rt_plot)) +
        x = "Longitude") 
 ```
 
-
-
-\newpage
-
 ## Sources and References
 
-https://royalsociety.org/news/2020/09/set-c-covid-r-rate/
+Boelle, Pierre-Yves, Thomas Obadia. "Estimation of R0 and Real-Time Reproduction Number from Epidemics." 2020. https://rdrr.io/cran/R0/
 
-Chongsuvivatwong, Virasakdi. Analysis of epidemiological data using R and Epicalc. 2008, Hat Yai, Thailand: Chammuang Press.
-
-Boelle, Pierre-Yves, Thomas Obadia. "Estimation of R0 and Real-Time Reproduction Number from Epidemics." 
-
-https://ourworldindata.org/coronavirus
-
-https://github.com/lin-lab/COVID19-Viz/tree/master/clean_data
-
-County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data.
+Chongsuvivatwong, Virasakdi. *Analysis of epidemiological data using R and Epicalc*. 2008. Hat Yai, Thailand: Chammuang Press.
 
 Dong, E., Du, H., & Gardner, L. (2020). An interactive web-based dashboard to track COVID-19 in real time. The Lancet infectious diseases, 20(5), 533-534.
 
+Our World In Data. "Statistics and Research: Coronavirus Pandemic (Covid-19)." 2020. https://ourworldindata.org/coronavirus
+
+The Royal Society. "Reproduction number (R) and growth rate (r) of the COVID-19 epidemic in the UK: methods of estimation, data sources, causes of heterogeneity, and use as a guide in policy formulation (PDF)." September 9, 2020. https://royalsociety.org/news/2020/09/set-c-covid-r-rate/
+
+County data was manually scraped from nbcnews.com and politico.com on 2020-11-19, 2020-11-20, and 2020-12-11. Alaska was excluded due to discrepancies in the formatting of the data.
+
 For reproduction rate by county, the dataset was too large for github so I manually reduced the size to exclude data from before November 15 and to exclude counties/dates that had too small of a sample size to produce a reproduction rate, as determined by the study. 
-
-
