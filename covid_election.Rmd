@@ -306,9 +306,6 @@ print(president_join[1:10, 1:7])
 
 \newpage
 
-## Interactions
-
-I decided to look at the relationship between the Percentage of Trump votes in a county or the Percentage of Biden votes in a county to the R at five different dates: Nov 4, Oct 28, Oct 21, Oct 14, and Oct 7. I chose dates that were multiples of one week prior to election day, as well as election day itself. So, I created five new dataframes created by merging the election results with the covid data on those four days.
 
 ```{r}
 cc_nov_4 <- covid_county %>%

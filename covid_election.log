@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  14 DEC 2020 20:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.4.7)  14 DEC 2020 20:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -646,45 +646,45 @@ LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 1
 File: t1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 ) [4]
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 233.
+(Font)              <10> on input line 223.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 233.
+(Font)              <7> on input line 223.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 233.
+(Font)              <5> on input line 223.
 [5pdfTeX warning (ext4): destination with the same identifier (name{table.1}) h
 as been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.348 \newpage
+l.338 \newpage
               ] [6pdfTeX warning (ext4): destination with the same identifier (
 name{table.2}) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
                                                   \fi \fi 
-l.348 \newpage
+l.338 \newpage
               ]
-Overfull \hbox (0.39499pt too wide) in paragraph at lines 353--356
+Overfull \hbox (0.39499pt too wide) in paragraph at lines 343--346
 \T1/lmr/m/n/10 (-20) Boelle, Pierre-Yves, Thomas Obadia. ``Estimation of R0 and
  Real-Time Reproduction Number from Epidemics.''
  []
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 382.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 372.
 [7]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 382.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 372.
 (./covid_election.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 382.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 382.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 372.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 372.
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 14470 strings out of 480608
- 211865 string characters out of 5903631
- 512096 words of memory out of 5000000
- 29989 multiletter control sequences out of 15000+600000
- 593891 words of font info for 100 fonts, out of 8000000 for 9000
+ 14464 strings out of 480608
+ 211804 string characters out of 5903631
+ 511061 words of memory out of 5000000
+ 29987 multiletter control sequences out of 15000+600000
+ 593808 words of font info for 99 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,13n,42p,960b,337s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2020/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}</usr/local/
@@ -694,10 +694,10 @@ dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2020/texmf-dist/fonts/
 type1/public/lm/lmr12.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/publi
 c/lm/lmr17.pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmri10
 .pfb></usr/local/texlive/2020/texmf-dist/fonts/type1/public/lm/lmtt10.pfb>
-Output written on covid_election.pdf (7 pages, 183515 bytes).
+Output written on covid_election.pdf (7 pages, 183067 bytes).
 PDF statistics:
- 131 PDF objects out of 1000 (max. 8388607)
- 107 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 12355 words of extra memory for PDF output out of 14400 (max. 10000000)
+ 126 PDF objects out of 1000 (max. 8388607)
+ 102 compressed objects within 2 object streams
+ 22 named destinations out of 1000 (max. 500000)
+ 12347 words of extra memory for PDF output out of 14400 (max. 10000000)
 
